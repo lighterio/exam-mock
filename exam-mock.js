@@ -1,3 +1,4 @@
+'use strict'
 /**
  * Keep track of mocked objects so they can all be unmocked.
  */
@@ -17,7 +18,8 @@ var mock = module.exports = function mock (object, mockObject) {
     mocked = [{}, {}]
     Object.defineProperty(object, '_EXAM_MOCKED_ORIGINALS', {
       enumerable: false,
-      value: mocked
+      value: mocked,
+      configurable: true
     })
   }
   for (var key in mockObject) {

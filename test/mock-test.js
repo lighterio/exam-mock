@@ -1,8 +1,8 @@
+'use strict'
+/* global describe it afterEach is mock unmock */
 var a = []
-var t = require('timers')
 
 describe('mock', function () {
-
   it('mocks and unmocks properties that exist', function () {
     mock(console, {
       log: mock.concat()
@@ -23,7 +23,8 @@ describe('mock', function () {
   })
 
   it('mocks and unmocks prototype properties', function () {
-    Array.prototype.something = function () {}
+    var a = Array
+    a.prototype.something = function () {}
     mock(a, {
       something: mock.count()
     })
@@ -59,7 +60,6 @@ describe('mock', function () {
   })
 
   describe('.count', function () {
-
     it('counts calls', function () {
       mock(a, {
         join: mock.count()
@@ -71,11 +71,9 @@ describe('mock', function () {
       is(a.join.value, 2)
       unmock(a)
     })
-
   })
 
   describe('.concat', function () {
-
     it('concatenates strings', function () {
       mock(a, {
         join: mock.count()
@@ -101,17 +99,15 @@ describe('mock', function () {
       is(a.push.value, '1,2,3')
       unmock(a)
     })
-
   })
 
   describe('.args', function () {
-
     it('stores arguments', function () {
       mock(a, {
         push: mock.args()
       })
       a.push(1)
-      is.same(a.push.value, [{0:1}])
+      is.same(a.push.value, [{0: 1}])
       a.push(2)
       is.same(a.push.value, [{0: 1}, {0: 2}])
       a.push(1, 2)
@@ -131,7 +127,6 @@ describe('mock', function () {
       is.same(a.push.value, [1, 2, 1])
       unmock(a)
     })
-
   })
 
   var supportMockFs
@@ -145,12 +140,12 @@ describe('mock', function () {
   var describeFs = supportMockFs && !isIstanbul ? describe : describe.skip
 
   describeFs('.fs', function () {
-
     afterEach(unmock.fs)
 
     it('creates files and directories', function (done) {
       var fs = mock.fs({'/tmp/file.txt': 'FILE_CONTENT'})
       fs.readFile('/tmp/file.txt', function (err, content) {
+        is.falsy(err)
         is(content.toString(), 'FILE_CONTENT')
         done()
       })
@@ -176,11 +171,9 @@ describe('mock', function () {
         done()
       })
     })
-
   })
 
   describeFs('.file', function () {
-
     afterEach(unmock.fs)
 
     it('creates a file', function () {
@@ -193,11 +186,9 @@ describe('mock', function () {
       var stat = fs.statSync('gid.txt')
       is(stat.gid, 1234)
     })
-
   })
 
   describe('.time', function () {
-
     it('freezes time', function () {
       var time = 1412637494591
       mock.time(time)
@@ -219,7 +210,6 @@ describe('mock', function () {
     })
 
     describe('.add', function () {
-
       it('adds time', function () {
         var time = 1412637494591
         mock.time(time)
@@ -242,19 +232,16 @@ describe('mock', function () {
 
         unmock.time()
       })
-
     })
 
     describe('.speed', function () {
-
       it('speeds mock time', function (done) {
-
         var time = 1412637494591
         var speed = 99
         mock.time(time)
         mock.time.speed(speed)
         function check () {
-          setTimeout(function () {
+          setImmediate(function () {
             var elapsed = Date.now() - time
             if (elapsed) {
               is(elapsed % speed, 0)
@@ -263,13 +250,10 @@ describe('mock', function () {
             } else {
               check()
             }
-          }, 1)
+          })
         }
         check()
       })
-
     })
-
   })
-
 })
