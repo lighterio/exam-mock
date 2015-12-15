@@ -106,7 +106,7 @@ describe('mock', function () {
 
   describe('.args', function () {
 
-    xit('stores arguments', function () {
+    it('stores arguments', function () {
       mock(a, {
         push: mock.args()
       })
@@ -247,14 +247,14 @@ describe('mock', function () {
 
     describe('.speed', function () {
 
-      it.skip('speeds mock time', function (done) {
+      it('speeds mock time', function (done) {
 
         var time = 1412637494591
         var speed = 99
         mock.time(time)
         mock.time.speed(speed)
         function check () {
-          setImmediate(function () {
+          setTimeout(function () {
             var elapsed = Date.now() - time
             if (elapsed) {
               is(elapsed % speed, 0)
@@ -263,7 +263,7 @@ describe('mock', function () {
             } else {
               check()
             }
-          })
+          }, 1)
         }
         check()
       })
